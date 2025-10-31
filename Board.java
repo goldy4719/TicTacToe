@@ -1,191 +1,214 @@
-
-
 public class Board {
     int cols = 3;
     int rows = 3;
-    char[][] board = new char[rows][cols];
+    char[][] board;
 
-    public char[][] makeBoard() {
-        //Make board blank
-        for (int i = 0; i < cols; i++) {
-            for (int j = 0; j < rows; j++) {
-                board[i][j] = '.';
-            }
-        }
-        return board;
+    //Create two - dimensional array which will hold data of board
+    public Board() {
+        this.board = new char[this.rows][this.cols];
     }
 
-    //format board
+    //Initialize board to blank
+    public char[][] makeBoard() {
+        for(int i = 0; i < this.cols; ++i) {
+            for(int j = 0; j < this.rows; ++j) {
+                this.board[i][j] = '.';
+            }
+        }
+
+        return this.board;
+    }
+
+    //Print board whenever needed
     public void printBoard() {
         System.out.println("     1     2    3   ");
-        for (int i = 0; i < cols; i++) {
+
+        for(int i = 0; i < this.cols; ++i) {
             System.out.println("   -----------------");
-            System.out.print((i + 1) + "  ||");
-            for (int j = 0; j < rows; j++) {
-                System.out.print(" " + board[i][j] + " ||");
+            System.out.print(i + 1 + "  ||");
+
+            for(int j = 0; j < this.rows; ++j) {
+                System.out.print(" " + this.board[i][j] + " ||");
             }
+
             System.out.println();
         }
+
         System.out.println("   ------------------");
     }
 
-    //Update board X
+    //When given row and col, check to see if already full, and that it is a valid column for X's
     public boolean updateBoardP1(int row, int col) {
-       if (row < 0 || row > 2 || col < 0 || col > 2) {
-           System.out.println("Invalid row or column. Try Again.");
-           return false;
-       }
-       else if (board[row][col] != '.'){
-            System.out.println("That has already been marked! Try Again.");
-            return false;
+        if (row >= 0 && row <= 2 && col >= 0 && col <= 2) {
+            if (this.board[row][col] != '.') {
+                System.out.println("That has already been marked! Try Again.");
+                return false;
+            } else {
+                this.board[row][col] = 'X';
+                return true;
+            }
         } else {
-            board[row][col] = 'X';
-            return true;
+            System.out.println("Invalid row or column. Try Again.");
+            return false;
         }
     }
-
-
+    //Same as updateBoardP1 just with O's
     public boolean updateBoardP2(int row, int col) {
-        if (row < 0 || row > 2 || col < 0 || col > 2) {
+        if (row >= 0 && row <= 2 && col >= 0 && col <= 2) {
+            if (this.board[row][col] != '.') {
+                System.out.println("That has already been marked! Try Again.");
+                return false;
+            } else {
+                this.board[row][col] = 'O';
+                return true;
+            }
+        } else {
             System.out.println("That is not a valid row or column. Try Again.");
             return false;
         }
-        else if (board[row][col] != '.'){
-            System.out.println("That has already been marked! Try Again.");
-            return false;
-        } else {
-            board[row][col] = 'O';
-            return true;
-        }
     }
 
+    //Logic to check for a win with 'x's
     public boolean checkWinP1() {
         boolean hasWon = true;
-        //check horizontal
-        for (int i = 0; i < rows; i++) {
+
+        for(int i = 0; i < this.rows; ++i) {
             hasWon = true;
-            for (int j = 0; j < cols; j++) {
-                if (board[i][j] != 'X') {
+
+            for(int j = 0; j < this.cols; ++j) {
+                if (this.board[i][j] != 'X') {
                     hasWon = false;
                     break;
                 }
-            }
-            if (hasWon) {
-                return true;
-            }
-        }
-        //check vertical
-        for (int i = 0; i < cols; i++) {
-            hasWon = true;
-            for (int j = 0; j < rows; j++) {
-                if (board[j][i] != 'X') {
-                    hasWon = false;
-                    break;
-                    }
-                }
-            if (hasWon) {
-                return true;
             }
 
+            if (hasWon) {
+                return true;
+            }
         }
-//check diagonal
-        for (int i = 0; i < rows; i++){
+
+        for(int i = 0; i < this.cols; ++i) {
             hasWon = true;
-            if (board[i][i] != 'X'){
+
+            for(int j = 0; j < this.rows; ++j) {
+                if (this.board[j][i] != 'X') {
+                    hasWon = false;
+                    break;
+                }
+            }
+
+            if (hasWon) {
+                return true;
+            }
+        }
+
+        for(int i = 0; i < this.rows; ++i) {
+            hasWon = true;
+            if (this.board[i][i] != 'X') {
                 hasWon = false;
                 break;
             }
         }
+
         if (hasWon) {
             return true;
-        }
-            //check counter diagonal
-        for (int i = 0; i < rows; i++){
-            hasWon = true;
-            int j = 2 - i;
-            if (board[i][j] != 'X'){
-                hasWon = false;
-                break;
+        } else {
+            for(int i = 0; i < this.rows; ++i) {
+                hasWon = true;
+                int j = 2 - i;
+                if (this.board[i][j] != 'X') {
+                    hasWon = false;
+                    break;
+                }
             }
-        }
-        if (hasWon) {
-            return true;
-        }
-//if nothing wins
+
+            if (hasWon) {
+                return true;
+            } else {
                 return false;
+            }
+        }
     }
 
-//P2 Win checker
-public boolean checkWinP2() {
-    boolean hasWon = true;
-    //check horizontal
-    for (int i = 0; i < rows; i++) {
-        hasWon = true;
-        for (int j = 0; j < cols; j++) {
-            if (board[i][j] != 'O') {
+    //Logic to check for a win with 'O's
+    public boolean checkWinP2() {
+        boolean hasWon = true;
+
+        for(int i = 0; i < this.rows; ++i) {
+            hasWon = true;
+
+            for(int j = 0; j < this.cols; ++j) {
+                if (this.board[i][j] != 'O') {
+                    hasWon = false;
+                    break;
+                }
+            }
+
+            if (hasWon) {
+                return true;
+            }
+        }
+
+        for(int i = 0; i < this.cols; ++i) {
+            hasWon = true;
+
+            for(int j = 0; j < this.rows; ++j) {
+                if (this.board[j][i] != 'O') {
+                    hasWon = false;
+                    break;
+                }
+            }
+
+            if (hasWon) {
+                return true;
+            }
+        }
+
+        for(int i = 0; i < this.rows; ++i) {
+            hasWon = true;
+            if (this.board[i][i] != 'O') {
                 hasWon = false;
                 break;
             }
         }
+
         if (hasWon) {
             return true;
-        }
-    }
-    //check vertical
-    for (int i = 0; i < cols; i++) {
-        hasWon = true;
-        for (int j = 0; j < rows; j++) {
-            if (board[j][i] != 'O') {
-                hasWon = false;
-                break;
+        } else {
+            for(int i = 0; i < this.rows; ++i) {
+                hasWon = true;
+                int j = 2 - i;
+                if (this.board[i][j] != 'O') {
+                    hasWon = false;
+                    break;
+                }
+            }
+
+            if (hasWon) {
+                return true;
+            } else {
+                return false;
             }
         }
-        if (hasWon) {
-            return true;
-        }
+    }
 
-    }
-//check diagonal
-    for (int i = 0; i < rows; i++){
-        hasWon = true;
-        if (board[i][i] != 'O'){
-            hasWon = false;
-            break;
-        }
-    }
-    if (hasWon) {
-        return true;
-    }
-    //check counter diagonal
-    for (int i = 0; i < rows; i++){
-        hasWon = true;
-        int j = 2 - i;
-        if (board[i][j] != 'O'){
-            hasWon = false;
-            break;
-        }
-    }
-    if (hasWon) {
-        return true;
-    }
-//if nothing wins
-    return false;
-}
-//checks for full board
-public boolean checkTie(){
+    //Logic to check for a tie
+    public boolean checkTie() {
         boolean hasTied = true;
-        for (int i = 0; i <rows; i++){
-            for (int j = 0; j < cols; j++){
-                if (board[i][j] == '.'){
-                    hasTied = false;
 
+        for(int i = 0; i < this.rows; ++i) {
+            for(int j = 0; j < this.cols; ++j) {
+                if (this.board[i][j] == '.') {
+                    hasTied = false;
                 }
             }
         }
-        if (hasTied) {return true;}
-        return false;
-}
+
+        if (hasTied) {
+            return true;
+        } else {
+            return false;
         }
-
-
+    }
+}
 
